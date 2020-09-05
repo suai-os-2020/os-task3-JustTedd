@@ -1,34 +1,9 @@
-#include "lab3.h"
+#include "lab3.h" #include <windows.h> #include <iostream> #include <stdio.h> // // lab3 code should be located here! // #define MAX_SEM_COUNT 10 #define NUM_THREADS 12 #define sleep_time 1 HANDLE lock; HANDLE Sem_array[NUM_THREADS]; HANDLE Thread_array[NUM_THREADS]; unsigned int lab3_task_number() { return 1; } DWORD WINAPI Thread_a(LPVOID lpParam){
 
-//
-// lab3 code should be located here!
-//
+UNREFERENCED_PARAMETER(lpParam); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'a' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[0],4,NULL); return true; } DWORD WINAPI Thread_c(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[0], INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'c' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[1],1,NULL); return true; } DWORD WINAPI Thread_f(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[0], INFINITE); for(int i=0;i<4*2;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'f' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[2],3,NULL); return true; } DWORD WINAPI Thread_b(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[0], INFINITE); for(int i=0;i<4*5;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'b' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[3],1,NULL); return true; } DWORD WINAPI Thread_d(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[0], INFINITE); for(int i=0;i<4*2;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'d' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[4],3,NULL); return true; } /*DWORD WINAPI Thread_d(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[0], INFINITE); for(int i=0;i<4*2;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'d' << std::flush;
 
+ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[4],3,NULL); return true; }*/ DWORD WINAPI Thread_e(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[1],INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'e' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[5],3,NULL); return true; } DWORD WINAPI Thread_g(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[2],INFINITE); WaitForSingleObject(Sem_array[5],INFINITE); WaitForSingleObject(Sem_array[4],INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'g' << std::flush; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[6],1,NULL); return true; } DWORD WINAPI Thread_m(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[2],INFINITE); WaitForSingleObject(Sem_array[5],INFINITE); WaitForSingleObject(Sem_array[4],INFINITE); for(int i=0;i<4*2;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'m'; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[7],1,NULL); return true; } DWORD WINAPI Thread_k(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[2],INFINITE); WaitForSingleObject(Sem_array[5],INFINITE); WaitForSingleObject(Sem_array[4],INFINITE); for(int i=0;i<4*2;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'k'; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[8],1,NULL); return true; } DWORD WINAPI Thread_h(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam);
 
-unsigned int lab3_thread_graph_id() 
-{
-    return 999;
-}
+WaitForSingleObject(Sem_array[6],INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'h'; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[9],1,NULL); return true; } DWORD WINAPI Thread_n(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[7],INFINITE); WaitForSingleObject(Sem_array[8],INFINITE); WaitForSingleObject(Sem_array[9],INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'n'; ReleaseMutex(lock); Sleep(sleep_time); } ReleaseSemaphore(Sem_array[10],1,NULL); return true; } DWORD WINAPI Thread_p(LPVOID lpParam){ UNREFERENCED_PARAMETER(lpParam); WaitForSingleObject(Sem_array[3],INFINITE); WaitForSingleObject(Sem_array[10],INFINITE); for(int i=0;i<4;i++){ WaitForSingleObject(lock,INFINITE); std::cout<<'p'; ReleaseMutex(lock); Sleep(sleep_time); } return true; } int lab3_init() { // ... lock=CreateMutex(NULL,FALSE,NULL); for ( int i=0; i< NUM_THREADS;i++){ Sem_array[i]=CreateSemaphore(NULL,0,MAX_SEM_COUNT,NULL); if(Sem_array[i]==NULL) { printf("CreateSemaphore error: %d\n", GetLastError()); return 1; } } DWORD ThreadID; int i=0; Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_a, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_d, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_c, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_f, NULL, 0, &ThreadID);
 
-const char* lab3_unsynchronized_threads()
-{
-    return "xyz";
-}
-
-const char* lab3_sequential_threads()
-{
-    return "rst,tuvw";
-}
-
-int lab3_init()
-{
-    // ...
-    
-    CreateThread(...);
-    // ...
-
-    WaitForMultipleObjects(...);
-    // ...
-    
-    return 0;
-}
+Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_b, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_e, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_g, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_m, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_k, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_h, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_n, NULL, 0, &ThreadID); Thread_array[i++]=CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Thread_p, NULL, 0, &ThreadID); WaitForMultipleObjects(NUM_THREADS, Thread_array, TRUE, INFINITE); for (int i = 0; i < NUM_THREADS; i++) { CloseHandle(Sem_array[i]); CloseHandle(Thread_array[i]); } CloseHandle(lock); return 0; }
